@@ -1,0 +1,1097 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Unique Factorization Theorem in Ordered Ring with Well-Ordering Principle}
+\author{Wenshi Zhao, Kevin Zhang, Jack Hu}
+\date{July 2022}
+
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{quotes,angles}
+\usepackage[english]{babel}
+\usepackage{mathtools}
+\usepackage{amsmath, amssymb, amsthm, mathrsfs, lipsum, biblatex, authblk}
+\usepackage[nottoc]{tocbibind}
+\addbibresource{References.bib}
+
+
+\oddsidemargin 0pt
+\evensidemargin 0pt
+\marginparwidth 40pt
+\marginparsep 10pt
+\topmargin -20pt
+\headsep 10pt
+\textheight 8.7in
+\textwidth 6.65in
+\linespread{1.25}
+\setlength\parindent{32pt}
+
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\LieT}{\mathfrak{t}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\A}{\mathds{A}}
+\newcommand{\FTSOC}{For the sake of contradiction}
+\newcommand{\SFTSOC}{Suppose for the sake of contradiction}
+\newcommand{\WLOG}{Without loss of generality}
+\newcommand{\ifff}{if and only if}
+\newcommand{\st}{such that }
+\newcommand{\less}{<}
+\newcommand{\ord}{\textup{ord}}
+
+
+\providecommand{\customgenericname}{}
+\newcommand{\newcustomtheorem}[2]{%
+  \newenvironment{#1}[1]
+  {%
+   \renewcommand\customgenericname{#2}%
+   \renewcommand\theinnercustomgeneric{##1}%
+   \innercustomgeneric
+  }
+  {\endinnercustomgeneric}
+}
+
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{axiom}[thm]{Axiom}
+\newtheorem{rmk}[thm]{Remark}
+
+
+\DeclareMathOperator{\lcm}{lcm}
+
+
+
+\begin{document}
+
+
+\maketitle
+
+\section{Introduction}
+
+Unique Factorization Theorem, loosely speaking, states that every integer can be uniquely factorized into primes. This is one of the most prominent results of elementary number theory, because it reduces many properties of integers to properties of primes. This simplification leads to other important developments in number theory, such as the primitive root theorem and quadratic reciprocity. \\
+
+Unique Factorization Theorem is very intuitive. For example, one can learn from elementary school that $12 = 2^2 \cdot 3$, and $36 = 2^2 \cdot 3^2$, and there is only one such factorization. However, such uniqueness is not apparent when considering large numbers, such as $1983475820456873$. Therefore, we will derive this theorem from first principle. We treat integer as "an ordered ring that satisfies well-ordering principle," and derive every properties of the set of integers using the ring axioms, order axioms, and well-ordering principle alone. \\
+
+In section 2, the ring axioms and order axioms are stated, and basic properties of ordered rings are established. The concepts of divisibility makes sense in ordered ring, and many properties of divisibility holds in general ordered ring, so such properties are outlined and proven in section 3. In section 4, well-ordering principle is stated, and mathematical induction is derived. In section 5 and 6, familiar results, such as division with remainder, Euclid's algorithm, and Bézout's lemma, are proven. In section 7, the properties of primes in $\Z$ is investigated. Section 8 provides the tools for repeated multiplication, and section 9 completes the proof of Unique Factorization Theorem.
+
+\section{Ring Axioms and Order Axioms}
+We are going to define integers as an ordered ring that satisfies well-ordering principle. In this section, we develop basic results derived from ring axioms and order axioms alone.
+\begin{axiom}[Ring Axioms]
+\label{ring axiom}
+A set $R$, along with two binary operations, addition $(+)$ and multiplication $(\cdot)$, is called a ring if the binary operations $+$ and $\cdot$ have the following properties: 
+\begin{enumerate}
+    \item Commutativity: $\forall a, b \in R, a+b=b+a, a b=b a$.
+    \item Associativity: $\forall a, b, c \in R, (a+b)+c=a+(b+c), (a b) c = a (b c)$.
+    \item Distributivity: $\forall a, b, c \in R, a(b+c)=ab+ac$.
+    \item Additive identity: $\exists 0 \in S, \forall a \in R, a + 0 = a$.
+    \item Additive inverse: $\forall a \in R, \exists (-a) \in R, a + (-a) = 0$.
+    \item Multiplicative identity: $\exists 1 \in R, \forall a \in S, a \cdot 1 = a$.
+\end{enumerate}
+\end{axiom}
+
+\begin{axiom}[Order Axioms]
+\label{order axiom}
+A ring $R$ is call an ordered ring if there is a non-empty subset $R^{+}$ that satisfies the following properties:
+\begin{enumerate}
+    \item Additive closure: $(\forall a,b \in R^{+}), a+b \in R^{+} $.
+    \item Multiplicative closure: $(\forall a,b \in R^{+}), a\cdot b \in R^{+} $.
+    \item Trichotomy: $(\forall a \in R)$ exactly one of the following holds:
+    \\
+    $a\in R^{+}, a=0$, or $-a\in R^{+}$
+\end{enumerate}
+
+
+\end{axiom}
+
+
+\begin{lem} Let $R$ be an ordered ring. Then additive identity and multiplicative identity is uniquely defined in $R$.
+\label{0.1}
+\end{lem}
+
+\begin{proof}
+Suppose $a, z \in R$. If $a+z=a$, then adding $-a$ to both side, $(-a) + (a+z) = (-a) + a$. By associativity, $(-a + a) + z = (-a) + a$. By additive inverse, $(-a + a) = 0$, so $0 + z = 0$. Therefore, by additive identity, $z = 0$. This shows that additive identity is uniquely defined in $R$. \\
+Suppose there exists $b, b'$ such that for all $a \in R$, $a \cdot b_1 = a, a\cdot b_2 = a$. Substitute $b_1$ for $a$ in $a \cdot b_2 = a$, we get the equality $b_1 \cdot b_2 = b_1$. By commutativity, $b_2 \cdot b_1 = b_1$, and by multiplicative identity, $b_2 = b_1$. This shows that multiplicative identity is uniquely defined in $R$.
+\end{proof}
+
+\begin{lem}
+\label{0.5}
+Let $R$ be an ordered ring. For all $a, b \in R$, there is a unique solution to the equation $a = b + x$. 
+\end{lem}
+
+\begin{proof}
+Suppose $a = b + x$. Adding both side by the additive inverse of $b$, $(-b)+a=(-b)+b+x=0+x=x$. Therefore, $x=(-b)+a$ is the solution of the equation $a = b+x$, and it is uniquely determined by $a$ and $b$.
+\end{proof}
+
+\begin{cor}
+\label{0.4}
+Given $a \in R$, then $-a$ is the unique solution $x$ to $a+x=0$
+\end{cor}
+\begin{proof}
+By \ref{0.5}, there is a unique solution to the equation $a+x=0$. By additive identity, $a+(-a)=0$, thus $(-a)$ is a solution to this equation. Hence $-a$ is the unique solution
+\end{proof}
+
+\begin{lem} 
+\label{0.1.1}
+$(\forall a \in R), 0\cdot a =0$
+\end{lem}
+
+\begin{proof}
+By additive identity, $0\cdot a=(0+0)\cdot a$ By distributivity, $0\cdot a=0\cdot a+ 0 \cdot a$. Thus $$0\cdot a+(-0\cdot a)= (0\cdot a+0\cdot a)+(-0\cdot a)$$. By associativity, $$0\cdot a+(-0\cdot a)= 0\cdot a+(0\cdot a+(-0\cdot a))$$ and thus by additive inverse $0= 0\cdot a+0$. By additive identity and commutativity, we have $a\cdot 0=0$
+\end{proof}
+
+\begin{prop}
+\label{0.4.1} Let $-a$ be the additive inverse of $a$. Then,
+\begin{enumerate}
+    \item $-(-a)=a$
+    \item $-(ab)=(-a)b=a(-b)$
+    \item $(-a)(-b)=ab$
+    \item $(-1)\cdot a=-a$
+\end{enumerate}
+\end{prop}
+
+
+\begin{proof}
+\begin{enumerate}
+    \item By additive identity, $(-a)+-(-a)=0$. Thus, we have 
+    $$a+((-a)+(-(-a)))=a$$ By associativity, we have $(a+(-a))+(-(-a))=a$. By additive inverse, we have $0+(-(-a))=a$, and thus by additive identity $-(-a)=a$.
+    \item By additive identity, 
+    \begin{equation}\label{eq0.4.1}
+        -(ab)+ab=0
+    \end{equation}
+    $(-a)b+ab=(a+(-a))b$, by additive identity, $(-a)b+ab=0\cdot b$. By \ref{0.1.1}, 
+    \begin{equation}\label{eq0.4.2}
+        (-a)b+ab=0
+    \end{equation}
+    Similarly, we have 
+    \begin{equation}\label{eq0.4.3}
+        \begin{split}
+            a(-b)+ab & =a((-b)+b)\\
+            &= a\cdot 0\\
+            & =0
+        \end{split}
+    \end{equation}
+    Thus by equations \ref{eq0.4.1}, \ref{eq0.4.2}, and \ref{eq0.4.3}, $-(ab),(-a)b,a(-b)$ are all solutions to the equation $x+ab=0$. By Corollary \ref{0.4}, this equation has only 1 unique solution, thus $-(ab)=(-a)b=a(-b)$. 
+    \item By distributivity and Lemma \ref{0.1.1},
+    \begin{equation}
+        \begin{split}
+            (-a)(-b)+(-a)\cdot b&= (-a)((-b)+b)\\
+            &= (-a)\cdot 0\\
+            &= 0
+        \end{split}
+    \end{equation}
+    By the second part of this proposition, which we have proven, $(-a)\cdot b= (-ab)$. Thus $(-a)(-b)+(-ab)=0$, and $((-a)(-b)+(-ab))+ab=0+ab$. By associativity and additive identity, $(-a)(-b)+(ab+(-ab))=ab$, and by additive inverse, $(-a)(-b)=ab$
+    \item By distributivity, additive inverse, and Lemma \ref{0.1.1},
+    \begin{equation}
+        \begin{split}
+            (-1)\cdot a+a &= (-1)\cdot a+1\cdot a\\
+            &= ((-1)+1)\cdot a\\
+            &= 0 \cdot a\\
+            &= 0
+        \end{split}
+    \end{equation}
+    By \ref{0.4}, $(-1)\cdot a=-a$.
+\end{enumerate}
+\end{proof}
+
+
+
+
+
+
+
+\begin{lem} Let $R$ be an ordering ring, and $0,1\in R$. Then, $0\neq 1$.
+\label{0.2}
+\end{lem}
+
+\begin{proof}
+\SFTSOC, $0=1$. Then, let $a\in R^+$, we have $0\cdot a=1\cdot a$, then by \ref{0.1.1} and multiplicative identity, we have $0=a$. However, this violates $a\in R^+$ by Trichotomy. Thus $0\neq 1$. 
+\end{proof}
+
+\begin{lem}
+\label{0.3}
+Let $R$ be an ordered ring. Suppose $a, b, b' \in R$. Then $a+b=a+b'$ implies $b=b'$.
+\end{lem}
+\begin{proof}
+Let $a+b=a+b'$. By additive inverse, there exists $-a \in $ such that. $(-a) + a = 0$. Adding $-a$ to both side of the equality, $-a + (a+b) = -a + (a+b')$. By associativity, $(-a+a)+b=(-a+a)+b'$. By additive inverse, $0+b=0+b'$. Hence, $b=b'$.
+\end{proof}
+
+\begin{lem}
+\label{0.6}
+Let $R$ be an ordered ring, and $a,b\in R$. Then, $ab=0$ implies $a=0$ or $b=0$.
+\end{lem}
+\begin{proof}
+\FTSOC, suppose $a\neq 0$ and $b\neq 0$. Thus, by Trichotomy, either $a\in R^{+}$ or $-a\in R^{+}$, and either $b\in R^{+}$ or $-b\in R^{+}$. Then, 
+\begin{enumerate}
+    \item If $a,b\in R^{+}$, then by closure $ab \in R^{+}$, which violates $ab=0$ by Trichotomy. 
+    \item If $a,-b\in R^{+}$, then by closure $a(-b)=-(ab) \in R^{+}$, which violates $ab=0$ by Trichotomy. 
+    \item If $-a,b\in R^{+}$, then by closure $(-a)b=-(ab) \in R^{+}$, which violates $ab=0$ by Trichotomy. 
+    \item If $-a,-b\in R^{+}$, then by closure $(-a)(-b)=ab \in R^{+}$, which violates $ab=0$ by Trichotomy. 
+\end{enumerate}
+Thus our supposition is false, and then our claim follows. 
+\end{proof}
+
+\begin{lem}
+\label{0.6.1}
+Let $R$ be an ordered ring. For $a,b,b'\in R,$ if $a\neq 0$, then $ab=ab'$ implies $b=b'$.
+\end{lem}
+\begin{proof}
+By $ab=ab'$, we have 
+\begin{equation}
+    \begin{split}
+        a(b+(-b'))&= ab+a(-b')\\
+        &= ab'+a(-b')\\
+        &= a(b'+(-b'))\\
+        &= a\cdot 0\\
+        &= 0
+    \end{split}
+\end{equation}
+Since $a\neq 0$, by \ref{0.6}, $b+(-b')=0$, and hence $b+(-b')+b'=0+b'$ and $b=b'$
+\end{proof}
+
+
+\begin{lem}
+\label{0.7}
+Let $R$ be an ordered ring. Then $1 \in R^{+}$, and $-1 \not\in R+$.
+\end{lem}
+\begin{proof}
+Since Lemma \ref{0.2} shows that $1 \neq 0$, either $1\in R^+$ or $-1 \in R^+$ by trichotomy. \SFTSOC, $-1 \in R^+$. Then by multiplicative closure, $(-1) \cdot (-1) \in R^+$. Hence, $1 \in R^+$. But by trichotomy, if $-1 \in R^+, -(-1)=1 \not\in R+$. This is a contradiction. Therefore, $1 \in R^+$, and by trichotomy, $-1 \in R^+$.
+\end{proof}
+
+
+\begin{lem}
+\label{minus}
+Let $R$ be an ordered ring, and $a,b\in R$. Then $-(a-b)=b-a$.
+\end{lem}
+\begin{proof}
+For all $a, b, -(a+(-b))+(a+(-b))=0$ by additive inverse. We also know that 
+\begin{equation}
+    \begin{split}
+        (-a)+b)+(a+(-b)&=((-a)+b)+a)+(-b)\\
+        &=((-a)+(b+a))+(-b)\\
+        &=((-a+a)+b)+(-b)\\
+        &=b+(-b)\\
+        &=0
+    \end{split}
+\end{equation}
+Therefore, by substitution,
+$$(a+(-b))+(-(a+(-b)))=(a+(-b))+((-a)+b)$$
+The left side of the equality is equal to $0$ by additive inverse, so $(a+(-b))+((-a)+b)=0$. Adding $-(a+(-b))$ to both side, we get $(-a)+b=-(a+(-b))$. By commutativity and the definition of subtraction, $b-a=-(a-b)$.
+\end{proof}
+
+\begin{lem}
+\label{minus2}
+Let $R$ be an ordered ring, and $a,b\in R$. Then $-(a+b)=-a-b$.
+\end{lem}
+
+\noindent Now we define the common notion of "less than," "less than or equal to," "greater than," "greater than or equal to" using the the subset $R^+$ given by the order axiom.
+
+\begin{defn}
+\label{<}
+Let $R$ be an ordered ring, and $a, b \in R$. $a<b$ if $b-a \in R^+$, and $a \leq b$ if $b-a \in \{0\} \cup R^+$.
+\end{defn}
+
+\begin{defn}
+\label{>}
+Let $R$ be an ordered ring, and $a, b \in R$. $a>b$ if $b<a$, and $a \geq b$ if $b \leq a$.
+\end{defn}
+
+
+\begin{proof}
+Previous lemma shows that $-(a-b)=b-a$. Substitute $b$ with $-b$, we get. $-(a-(-b))=-b-a$. From Proposition \ref{0.4.1}, $-(-b)=b$. This implies that $-(a+b)=-b-a=-a-b$.
+\end{proof}
+
+\begin{lem}
+\label{converse-closure}
+Let $a,b\in R$. If $a\in R^{+}$, $ab\in R^{+}$, then $b\in R^{+}$. 
+\end{lem}
+\begin{proof}
+\FTSOC, suppose $b\not\in R^+$. Then, by Trichotomy, either $b=0$ or $-b\in R^+$. If $b=0$, by \ref{0.1.1}, $ab=0$, which violates trichotomy since $ab\in R^+$. If $-b\in R^+$, then by closure $-(ab)=a(-b)\in R^+$, which also violates trichotomy. Thus our supposition is false, and then our claim follows. 
+\end{proof}
+
+\begin{lem}
+\label{0.8}
+Let $R$ be an ordered ring. For $a,b,c\in R$, $a<b, b<c$ implies $a<c$, and $a\leq b, b\leq c$ implies $ a \leq c$.
+\end{lem}
+
+\begin{proof}
+If $a<b, b<c$, then by definition, $b-a \in R^+, c-b \in R^+$. Then by additive closure $(c-b)+(b-a)=c+(-b+b)-a=c-a \in R^+$. Therefore, $a<c$. \\
+
+If $a \leq b, b \leq c$, then by definition, $b-a, c-b \in \{0\} \cup R^+$. If $b-a=0, c-b=0$, then $(b-a)+(c-b)=0\in \{0\} \cup R^+$. If $b-a \in R^+, c-b=0$, then $(b-a)+(c-b)=b-a\in \{0\} \cup R^+$. $b-a=0, c-b\in R^+$, then $(b-a)+(c-b)=c-b\in \{0\} \cup R^+$. If $b-a,c-b\in R^+$, then $(b-a)+(c-b)\in \{0\}\cup R^+$. Therefore, in all cases, $(b-a)+(c-b)=c-a \in \{0\} \cup R^+$.
+\end{proof}
+
+\begin{lem}
+\label{0.9}
+Let $R$ be an ordered ring. For $a, b \in R$, exactly one of the following is true: $a<b, a=b, b<a$.
+\end{lem}
+
+\begin{proof}
+Consider $b-a \in R$. From Lemma \ref{minus}, $-(b-a)=a-b$. So by trichotomy, exactly one of the following is true: $b-a \in R^+, b-a=0 or a-b\in R^+$. $b-a \in R^+$ if and only if $a<b$; $b-a=0$ if and only if $b=a$; $a-b \in R^+$ if and only if $b<a$. So exactly one of the following is true: $a<b, a=b, b<a$.
+
+\end{proof}
+\begin{lem}
+\label{0.9.1}
+If $a\leq b$ and $b\leq a$, then $a=b$
+\end{lem}
+\begin{proof}
+We know that from \ref{<} $a\leq b$ implies $a<b$ or $a=b$. Similarly, $b\leq a$ implies $b<a$ or $b=a$. Then, by \ref{0.9}, $a=b$, or else Trichotomy is violated. 
+\end{proof}
+
+
+
+
+\begin{lem}
+\label{0.10.3}
+Let $R$ be an ordered ring, and $a \in R$. If $a\leq 0$, then $-a\geq0$. If $a\geq 0$, then $-a\leq0$.
+\end{lem}
+\begin{proof}
+If $a \geq 0$, then $a>0$ or $a=0$. Consider the first case $a>0$. Then $0<a$, so $a-0 \in R^+$, then $a\in R^+$. By Lemma \ref{0.4.1}, $a=-(-a)\in R^+$. By additive identity, $0+(-(-a))=0-(-a) \in R^+$. By definition, $-a<0$. In the second case, $a=0$, so $-a=0$. So it is also true that $-a \leq 0$. \\
+
+If $a \leq 0$, then $a<0$ or $a=0$. Consider the first case $a<0$. Then $-a=0-a\in R^+$. Therefore, $-a-0=-a\in R^+$, so by definition, $0 < -a$, and $-a > 0$. In the second case, $a=0$, so $-a=0$. So it is also true that $-a \geq 0$. 
+\end{proof}
+
+\begin{lem}
+\label{0.10.4}
+Let $R$ be an ordered ring. Then additive closure and multiplicative closure holds in $\{0\} \cup R^+$.
+\end{lem}
+
+\begin{proof}
+Let $a, b \in \{0\} \cup R^+$. Then exactly one of the following must be true: $a, b \in R^+$, $a=0, b\in R^+$, $a \in R^+$, $a=0, b=0$. In the first case, $a+b \in R^+$ by additive closure in $R^+$, so $a+b \in \{0\} \cup R^+$. In the second case, $a+b=0+b=b \in R^+$, so $a+b \in \{0\} \cup R^+$. In the third case, $a+b=a+0=a\in R^+$, so $a+b \in \{0\} \cup R^+$. In the last case, $a+b=0+0=0\in R^+$m, so $a+b \in \{0\} \cup R^+$.
+\end{proof}
+
+\begin{lem}
+\label{0.10.5}
+Let $R$ be an ordered ring, and $a \in R$. If $a\leq b$, then $-a\geq-b$. If $a\geq b$, then $-a\leq-b$.
+\end{lem}
+
+\begin{proof}
+If $a \leq b$, then $b-a \in \{0\} \cup R^+$, so $b-a \geq 0$. By Lemma \ref{0.10.3}, $-(b-a)=a-b \leq 0$. Therefore, $(-b)-(-a)=a-b \leq 0$. This shows that $-b \leq -a$, or equivalently, $-a \geq -b$. If $a \geq b$, then $b \leq a$, and $a-b \in \{0\} \cup R^+$, so $a-b \geq 0$. By Lemma \ref{0.10.3}, $-(a-b)=b-a \leq 0$. Therefore, $(-a)-(-b)) \leq 0$, so $-a \leq -b$.
+\end{proof}
+
+\begin{prop}
+\label{0.10.1}
+Let $R$ be an ordered ring. Let $a,b,x,y\in R$, and $a \leq b, x \leq y$. Then $a+x \leq b+y$.
+\end{prop}
+
+\begin{proof}
+We know that $(b+y)-(a+x) = b+y-a-x=(b-a)+(y-x)$. If $a \leq b, x \leq y$, then $b-a \in \{0\} \cup R^+$, and $y-x \in \{0\} \cup R^+$. By additive closure in $\{0\} \cup R^+$, $(b+y)-(a+x) \in \{0\} \cup R^+$. Therefore, by definition, $a+x \leq b+y$.
+\end{proof}
+
+\begin{prop}
+\label{0.10.2}
+Let $R$ be an ordered ring. Let $a,b, x, y \in \{0\} \cup R^+$, and $a \leq b, x \leq y$. Then $ax \leq by$.  
+\end{prop}
+
+
+\begin{proof}
+By ring axioms, we can expand $(b-a)(y+x)= by-ax+bx-ay$, and $(b+a)(y-x)=by-ax-bx+ay$. Since it follows from definition and closure of $\{0\} \cup R^+$, $b-a, b+a, y-x, y+x \in \{0\} \cup R^+$, we know that $(b-a)(y+x) \in \{0\} \cup R^+$, $(b+a)(y-x) \in \{0\} \cup R^+$. Therefore, 
+$$(b-a)(y+x)+(b+a)(y-x) = by+by-ax-ax=(by-ax)+(by-ax) \in \{0\} \cup R^+$$
+By additive closure. It follows that $by-ax \in \{0\} \cup R^+$, so $ax \leq by$.
+\end{proof}
+
+\begin{cor}
+\label{0.10.6}
+Let $R$ be an ordered ring. Let $a,b, x, y \in \{0\} \cup R^+$. If
+\begin{enumerate}
+    \item $a\leq b, x\less y$ or
+    \item $a\less y, x\leq y$ or
+    \item $a\less b, x\less y$
+\end{enumerate} 
+then $ax<by$. 
+\end{cor}
+\begin{proof}
+We follow the same process as we did in \ref{0.10.2}. Since $0$ cannot be the sum of a non-negative number and a positive number, the '<' sign forbids the lower bound to be taken. 
+\end{proof}
+
+\begin{defn}[Absolute Value]
+\label{abs}
+We define $|a|$ be be:
+\begin{equation}
+    |a|=
+    \begin{cases}
+    a & a\in R^{+} \cup \{0\}\\
+    -a & -a \in R^{+}
+    \end{cases}
+\end{equation}
+\end{defn}
+
+\begin{lem}
+\label{abspos}
+$\forall a\in R$, $|a|\in R^{+}\cup \{0\}$.
+\end{lem}
+ \begin{proof}
+When $a\in R^{+} \cup \{0\}$, $|a|=a$. When $-a\in R^{+}$, $|a|=-a\in R^{+}$. Thus our lemma follows. 
+\end{proof}
+
+\begin{lem}
+\begin{equation}
+    |x|<c \Rightarrow 
+    \begin{cases}
+    -c< x< c & c\in R^{+}\cup \{0\}\\
+    \text{NO SOLUTION} & -c\in R^{+}
+    \end{cases}
+\end{equation}
+\begin{equation}
+    |x|\leq c \Rightarrow 
+    \begin{cases}
+    -c\leq x\leq c & c\in R^{+}\cup \{0\}\\
+    \text{NO SOLUTION} & -c\in R^{+}
+    \end{cases}
+\end{equation}
+\end{lem}
+
+\begin{proof}
+If $-c\in R^+$, by \ref{abspos}, $x$ has no solution.\\
+If $c\in R^{+}\cup \{0\}$, then:
+\begin{enumerate}
+    \item If $x\in R^{+} \cup \{0\}$, then $|x|=x<c$, thus $0\leq x <c$
+    \item If $-x\in R^+$, then $|x|=-x<c$, thus $0>x>-c$
+\end{enumerate}
+Combined, we have $-c<x-c$. The second case follows from a similar argument. 
+\end{proof}
+
+
+
+
+
+\section{Divisibility}
+Divisibility is another properties of ordered ring. In this section, we investigate the basic properties of divisibility. In the later section, after the ring of integer is defined, the concept of divisibility will be explored and developed further.
+\begin{defn}
+\label{div}
+Let $R$ be an ordered ring, and $a,b\in R$, $b\neq 0$. $a$ is said to divide $b$ if $b = q\cdot a$ for some $q\in R$. This will be denoted as $a|b.$
+\end{defn}
+
+\begin{lem}
+\label{1.6} Let $R$ be an ordered ring. For every $a \in R, a|a.$
+\end{lem}
+\begin{proof}
+By multiplicative identity, $\exists 1\in R$ such that $a=a\cdot1.$ Because $1\in R,$ $a|a.$\
+\end{proof}
+
+\begin{lem}
+\label{1.7} Let $R$ be an ordered ring. For all $a,b,c\in R,$ if $a|b,$ then $a|bc.$ 
+\end{lem}
+\begin{proof}
+By definition, $\exists q\in R$ such that $b=q\cdot a.$ Therefore, $bc = (q\cdot a)c.$ By associativity and commutativity, $bc = (qc)\cdot a.$ By multiplicative closure, $qc\in R,$ so $a|bc.$
+\end{proof}
+
+\begin{lem}
+\label{1.8} Let $R$ be an ordered ring. For all $a,b,k\in R,$ if $k|a$ and $k|b,$ then $k|(a+b).$
+\end{lem}
+\begin{proof}
+By definition, $\exists q_{1}\in R$ and $q_{2}\in R$ such that $b=q_{1}\cdot k$ and $a=q_{2}\cdot k.$ Therefore, $a+b=q_{1}\cdot k + q_{2}\cdot k.$ By distributivity, $a+b = (q_{1} + q_{2})\cdot k.$ By additive closure, $q_{1} + q_{2}\in R,$ so $k|(a+b).$
+\end{proof}
+
+\begin{lem}
+\label{1.9} Let $R$ be an ordered ring. For all $a,b,c\in R,$ if $a|b,$ then $b|c.$
+\end{lem}
+\begin{proof}
+By definition, $\exists q_{1}\in R$ and $q_{2}\in R$ such that $b=q_{1}\cdot a$ and $c=q_{2}\cdot b.$ Then by substituting the former equation into the latter, we get $c=q_{2}\cdot (q_{1}\cdot a).$ By associativity, $c=(q_{2}q_{1})\cdot a.$ By multiplicative closure, $q_{1}q_{2}\in R,$ so $a|c.$
+\end{proof}
+
+\begin{lem}
+\label{2.10} Let $R$ be an ordered ring. For all $d,a,b,r,s\in R,$ if $d|a$ and $d|b,$ then $d|(ar + bs).$
+\end{lem}
+\begin{proof}
+By definition, $\exists q_{1}, q_{2}\in R$ such that $a=q_{1}d$ and $b=q_{2}d.$ Then $ar+bs = (q_{1}d)r + (q_{2}d)s.$ By distributivity and commutativity, $ar+bs = (q_{1}r + q_{2}s)d.$ By multiplicative closure, $q_{1}r\in R$ and $q_{2}s\in R,$ so by additive closure, $q_{1}r + q_{2}s\in R$ as well. Therefore, $d|(ar+bs).$
+\end{proof}
+
+
+
+
+
+
+\section{Well Ordering Principle (WOP) and $\Z$}
+Clearly, the ring axiom and order axiom does not define the ring of integers. One can give examples of ordered rings that are not integers: rational number, real numbers, etc. The main object of this paper is the ring of integers; therefore, we will complete its definition by introducing well-ordering principle. Intuitively, if one is given a subset of positive integers, then one can find a minimal element of it. This is formalized as an axioms below:
+
+\begin{axiom}[Well-Ordering Principle]
+\label{wop}
+We say that an ordered ring $R$ satisfies the Well Ordering Principle if 
+for any $S\subseteq R^{+}$, $S$ has a smallest element. That is, $\exists s\in S$, $\forall s'\in S, s\leq s'$.
+\end{axiom}
+
+The well-ordering principle captures the discreteness of integers. If a ring is not discrete (loosely speaking, a ring is not discrete if it does not have an element that is closest to $0$), then it does not satisfy well-ordering principle.
+
+\begin{defn}
+We refer to the ordered ring that satisfies \ref{wop} by $\Z$. 
+\end{defn}
+
+\begin{cor}
+\label{no-inf}
+There exists no infinitely descending sequences of positive integers.
+\end{cor}
+\begin{proof}
+\FTSOC, there is such a sequence. By WOP $\ref{wop}$, the set of elements in a sequence of positive integers is a subset of $Z^{+}$. Thus There exists a minimal element in this set. However, this contradicts with the fact that this sequence is infinitely descending. Thus, there exists no such sequences.
+\end{proof}
+
+We generalize well-ordering principle to simplify proofs in later sections. 
+
+\begin{thm}[Generalized Well-Ordering Principle]
+\label{wop2}
+Let $S\subseteq \Z$ be a non-empty subset of $\Z$. Then:
+\begin{enumerate}
+    \item If $S$ is bounded below, namely $\exists m\in \Z$ \st $\forall s\in S$, $S\geq m$, then S has a smallest element: $\exists s'\in \Z$ \st $\forall s\in S$, $S\geq s'$.
+    \item If $S$ is bounded above, namely $\exists M\in \Z$ \st $\forall s\in S$, $S\leq M$, then S has a greatest element: $\exists s'\in \Z$ \st $\forall s\in S$, $S\leq s'$.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+\begin{enumerate}
+    \item Take
+    \begin{equation}
+        A=\{s-m+1|s\in S\}
+    \end{equation}
+    Since $\forall s\in S$, $s\geq m$, $\forall a\in A$, $a\geq 1 >0$. Thus $A\subseteq \Z^{+}$, and by \ref{wop}, $\exists a'\in A$ \st $\forall a\in A$, $a\geq a'$. According to the definition of $A$, $a'=s'-m+1$ for some $s'\in S$. Thus $s'=a'+m-1$. Since $\forall s\in S$, $s-m+1\geq a'$, thus $s\geq a'+m-1=s'$, and hence $s'$ is the smallest element. 
+    
+    \item Take 
+    \begin{equation}
+        A=\{M-s+1|s\in S\}
+    \end{equation}
+    Since $\forall s\in S$, $s\leq M$, $\forall a\in A$, $a\geq 1 >0$. Thus $A\subseteq \Z^{+}$, and by \ref{wop}, $\exists a'\in A$ \st $\forall a\in A$, $a\geq a'$. According to the definition of $A$, $a'=M-s'+1$ for some $s'\in S$. Thus $s'=M-a'+1$. Since $\forall s\in S$, $M-s+1\geq a'$, thus $s\geq M-a'+1=s'$, and hence $s'$ is the greatest element. 
+\end{enumerate}
+
+\end{proof}
+
+\begin{prop}[NIBZO]
+\label{nibzo}
+$\not\exists a\in \Z$ \st $0<a<1$
+\end{prop}
+\begin{proof}
+By \ref{wop}, $\exists a \in \Z^{+}$ \st $\forall a' \in \Z^{+}, a\leq a'$. \FTSOC, suppose $a<1$. Thus, since $a\in \Z^{+}$, by \ref{0.10.2}, we have $a\cdot a <a$. Since  $a\cdot a\in \Z^{+}$ by closure, it violates the definition of $a$. Thus $a \geq 1$. We know that $a'\in \Z^{+} \iff a' >0$. Since $a$ is the minimal element in $\Z^{+}$, $\forall a' \in \Z^{+}, a'\geq a\geq 1$, thus our claim follows. 
+\end{proof}
+
+\begin{lem}
+\label{1.12}
+If $a\in \Z$, $b \in \Z^{+}$, $a|b$, then $a\leq b$. 
+\end{lem}
+
+\begin{proof}
+By Trichotomy and \ref{div}, we can divide into 2 cases based on $a$:
+\begin{enumerate}
+    \item $-a\in \Z^{+}$.\\
+    Thus, by closure, $b-a=b+(-a)\in \Z^{+}$, thus $a\leq b$. 
+    \item $a\in \Z^{+}$.\\
+    Since $a|b$, $\exists q \in \Z$ \st $aq=b$. Since $a,b\in \Z^{+}$, by \ref{converse-closure} $q\in \Z^{+}$. Thus by \ref{nibzo}, $q\geq 1$. Thus, by \ref{0.10.2}, $b=aq\geq 1\cdot a=a$
+\end{enumerate}
+\end{proof}
+
+Induction is a consequence of well-ordering principle. 
+
+\begin{thm}[Induction]
+\label{induction}
+Let $P(x)$ be a formula involving a free variable $x$. If: 
+\begin{enumerate}
+    \item P(1) is true
+    \item P(k) is true $\Rightarrow$ P(k+1) is true, where $k\in \Z^{+}$
+\end{enumerate}
+then $P(n)$ is true for $\forall n\in \Z^{+}$
+\end{thm}
+
+\begin{proof}
+Let $S$ be a subset of $Z^{+}$ be defined as 
+\begin{equation}
+    S=\{n|P(n)\text{ is false}\}
+\end{equation}
+\FTSOC, suppose S is non-empty. Then, by WOP (\ref{wop}),  S has a smallest element $s$. Since $P(1)$ is true, then $s>1$. Consider $s-1$. We know $s-1>0$, so $s-1\in \Z^{+}$. $s-1\not\in S$, or else it will violate the definition of $s$ as the smallest element. Thus, $P(s-1)$ is true. According to our definition, $P(s-1)$ is true implies $P(s)$ is true, which means $s\not\in S$, and there is a contradiction. Thus, S is empty, and our claim follows. 
+\end{proof}
+\begin{thm}[Strong Induction]
+\label{strong induction}
+Let $P(x)$ be a formula involving a free variable $x$. If: 
+\begin{enumerate}
+    \item P(1) is true
+    \item P(k) is true for $\forall k\in \Z^{+}, k\leq n$ $\Rightarrow$ P(n+1) is true, where $n\in \Z^{+}$
+\end{enumerate}
+then $P(n)$ is true for $\forall n\in \Z^{+}$
+\end{thm}
+\begin{proof}
+Let $S$ be a subset of $Z^{+}$ be defined as 
+\begin{equation}
+    S=\{n|P(n)\text{ is false}\}
+\end{equation}
+\FTSOC, suppose S is non-empty. Then, by WOP (\ref{wop}),  S has a smallest element $s$. Since $P(1)$ is true, then $s>1$. Consider $s-1$. We know $s-1>0$, so $s-1\in \Z^{+}$. $s-1\not\in S$, or else it will violate the definition of $s$ as the smallest element. Thus, $P(s-1)$ is true. Similarly, for $\forall s'<s, s'\in \Z^{+}$, P(s) is true. According to our definition, $P(s-1)$ is true implies $P(s)$ is true, which means $s\not\in S$, and there is a contradiction. Thus, S is empty, and our claim follows.
+\end{proof}
+
+\begin{cor}[Generalized Induction and Strong induction]
+\label{induction2}
+Let $P(x)$ be a formula involving a free variable $x$, and $P(c)$ is true, where $c\in \Z$. Then:
+\begin{enumerate}
+    \item $(P(n)$ is true $\Rightarrow$ $P(n+1)$ is true $(n\geq c))$ $\Rightarrow$ $P(n)$ is true $\forall n\geq c$
+    \item $(P(n)$ is true $\Rightarrow$ $P(n-1)$ is true $(n\leq c))$ $\Rightarrow$ $P(n)$ is true $\forall n\leq c$
+    \item $(P(k)$ is true $(\forall c\leq k \leq n, k\in \Z )$ $\Rightarrow$ $P(n+1)$ is true $(n\geq c))$ $\Rightarrow$ $P(n)$ is true $\forall n\geq c$
+    \item $(P(k)$ is true $(\forall c\geq k \geq n, k\in \Z )$ $\Rightarrow$ $P(n-1)$ is true $(n\leq c))$ $\Rightarrow$ $P(n)$ is true $\forall n\leq c$
+\end{enumerate}
+\end{cor}
+\begin{proof}
+Repeat the proof process in \ref{induction} and \ref{strong induction}, replacing WOP \ref{wop} with Generalized WOP \ref{wop2}. 
+\end{proof}
+
+\begin{defn}[Power]
+\label{exp}We define $a^{n}$ to be
+\begin{equation}
+    a^{n}=
+    \begin{cases}
+    a^{n-1}\cdot a    &  n\geq 1\\
+    1                 & n=0
+    \end{cases}
+\end{equation}
+ where $n\in \Z^{+}$
+\end{defn}
+\begin{rmk}
+The recursive definition of $a^{n}$ terminates because of \ref{no-inf}.
+\end{rmk}
+
+\begin{lem}
+\label{pow1}
+$$a^{m+n}=a^{m}\cdot a^{n} \text{   } (m,n\in \Z^{+})$$
+\end{lem}
+\begin{proof}
+We will use induction $(\ref{induction})$. \\
+When $n=1$, $$a^{m+1}=a^{m}\cdot a=a^{m}\cdot a^{1}$$\\
+Assume when $n=k$, our claim works. Then when $n=k+1$, 
+\begin{equation}
+\begin{split}
+    a^{m+k+1}&=a^{m+k}\cdot a\\
+    &=( a^{m}\cdot a^{k})\cdot a\\
+    &=a^{m}\cdot (a^{k}\cdot a)\\
+    &= a^{m} \cdot a^{k+1}
+\end{split}
+\end{equation}
+Thus, the claim works when $n=k+1$. By induction, our claim works for $\forall m,n \in \Z^{+}$ .
+\end{proof}
+
+\begin{lem}
+\label{pow2}
+$$a^{mn}=(a^{m})^{n} \text{   } (m,n\in \Z^{+})$$
+\end{lem}
+\begin{proof}
+We will use induction. \\
+When $n=1$, $$a^{m\cdot 1}=a^{m}=(a^{m})^{1}$$\\
+Assume when $n=k$, out claim works. Then, when $n=k+1$,
+\begin{equation}
+    \begin{split}
+        a^{m(k+1)} &= a^{mk+k}\\
+        &= a^{mk}\cdot a^{m}\\
+        &= (a^{m})^{k}\cdot a^{m}\\
+        &= (a^{m})^{k+1}
+    \end{split}
+\end{equation}
+Thus, the claim works when $n=k+1$. By induction, our claim works for $\forall m,n \in \Z^{+}$ .
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+\section{Division with Remainder}
+From elementary school, it is known that one can divide an integer $a$ by an integer $b$ if $b \neq 0$ and write out the results as a quotient and a remainder. This process, called division with remainder, is formalized below:
+\begin{thm}[Division with Remainder]
+\label{division} For all $a,b\in \Z, \exists q,r\in \Z$ such that $a=bq+r$ and $0\leq r<|b|.$
+\end{thm}
+\begin{proof}
+First we can show the Division Theorem is true for $a,b\in \Z^{+}$ where $\not=0.$ If $a<b,$ then $a=b\cdot0+r$ where $0\leq r=a < b=|b|$ as desired. Else if $a=b,$ then $a=b\cdot1+r$ where $0\leq0=r<|b|$ as desired. Else, $a>b,$ so construct a subset of the positive integers $S=\{a|\nexists q$ \st $r=a-bq$ and $0\leq r < b = |b|\}.$ By Axiom \ref{wop}, $\exists a'\in \Z^{+}$ \st $\forall x\in S, a'\leq x.$ Then note that $a'-1\not\in S \Rightarrow r=(a'-1)-bq$ for some $q\in \Z.$ Then $r+1=a'-bq.$ If $r+1<b=|b|,$ we are done, so otherwise, $r+1=b \Rightarrow b=a-bq \Rightarrow 0=a-(b+1)q.$ Since $0\leq0=r<|b|,$ we have a contradiction, meaning $S$ is empty and the $a,b\in \Z^{+}$ case holds.\\
+
+\noindent Next, we can show the Division Theorem is true for $a\in \Z, b\in \Z^{+}.$ Since the $a>0$ case has already been proven above, we just need to cover two more cases below.\\
+
+Case 1 $(a=0):$ Note $0=b\cdot0+0,$ so we are done.\\
+
+Case 2 $(a<0):$ By trichotomy, $-a\in \Z^{+},$ so $\forall b\in \Z^{+}, \exists q,r\in \Z \st 0\leq r<b=|b|$ and $r=(-a)-bq.$ Then note that $(-r)=a-b(-q)$ where $-b<(-r)\leq0.$ Then $(-r)+b=a-b(-q-1)$ where $0<(-r)+b\leq b.$ If $(-r)+b \leq b,$ then we are done, otherwise, $-r+b=b,$ so $-r=0\Rightarrow r=0 \Rightarrow 0=a-b(-q),$ so we are done.\\
+
+\noindent Finally, we can generalize the Division Theorem to all $a,b\in \Z$ with $b\not=0.$ Since the $b>0$ case has been proven above, assume $(-b)>0.$ Then $\exists q\in \Z$ such that $r=a-(-b)q$ and $0\leq r<|b|=(-b).$ This implies $r=a-b(-q) \Rightarrow a=b(-q)+r,$ so since $(-q)\in \Z,$ the general case holds.
+\end{proof}
+
+\begin{rmk}
+\label{unique div}The remainder returned in Theorem \ref{division} is unique.
+\end{rmk}
+\begin{proof}
+\FTSOC, suppose that there exists two ways to divide $a$ with different remainders. Thus, we have 
+\begin{center}
+    $a=q_{1}b+r_{1}$\\
+    $a=q_{2}b+r_{2}$
+\end{center}
+ and $r_{1}\neq r_{2}$. Then $q_{1}\neq q_{2}$ or else there is a contradiction. \WLOG, let $q_{1}>q_{2}$. Thus, $q_{1}-q_{2}\in \Z^{+}$, $q_{1}-q_{2}\geq 1$. Since $|b|\leq |(q_{1}-q_{2})b|=|q_{1}b-q_{2}|b=|r_{2}-r_{1}|$, $|r_{2}-r_{1}|\geq |b|$. From \ref{division}, we have $0\leq r_{1},r_{2}<|b|$. Thus $-|b|<-r_{1}\leq 0$, and thus $-|b|<r_{2}-r_{1}<|b|$, which is equivalent to $|r_{2}-r_{1}|\leq |b|$. This violates trichotomy, and hence our supposition is false. Thus, this lemma follows. 
+\end{proof}
+
+\section{Greatest Common Divisor, and Euclid's Algorithm}
+\begin{defn}
+\label{gcd}
+Let $a, b \in \Z$. The greatest common divisor of $a$ and $b$, denoted as $\gcd(a, b)$, is the maximal element of the set $S = \{d\in\Z:d|a, d|b\}$, that is, $\forall d'\in S, d'\leq d$.
+\end{defn}
+
+Note that for all $a\in\Z$, $1|a$ because $1\cdot a = a$ for all $a\in\Z$. Therefore, $S$ is non-empty. By Generalized WOP, $\gcd(a,b)$ exists for all $a,b\in\Z$. Greatest common divisor is a strong tool analyzing the properties of integers. It is an auxiliary concept that helps us illuminate the structure of $\Z$.
+
+\begin{rmk}
+\label{gcdpos}
+gcd($a,b$)$\in \Z^+$.
+\end{rmk}
+\begin{proof}
+Denote $g$=gcd$(a,b)$. We know $S$ is a subset of $\Z$, thus $g\in Z$. Since $1|a,1|b$, we must have $1\in S$. Thus, $g\geq 1$, and hence gcd$(a,b)\in Z^{+}$. 
+\end{proof}
+
+
+\begin{prop}
+\label{gcd unique}
+Let $a, b\in\Z$. The $\gcd(a,b)$ is unique.
+\end{prop}
+
+\begin{proof}
+Let $S = \{d\in\Z:d|a, d|b\}$, and $d_1, d_2$ are both maximal elements of the set. Then $d_1 \leq d_2$, and $d_2 \leq d_1$ by the above definition. By Lemma \ref{0.9.1}, $d_1=d_2$. Therefore, the greatest common divisor of $a$ and $b$ is unique.
+\end{proof}
+
+\begin{prop}
+Let $a,b\in \Z$. $\gcd(a,b)=b$ \ifff  \text{ }$b\in \Z^+$ and $b|a$.
+\end{prop}
+
+\begin{proof}
+If $\gcd(a,b)=b$, then $b|a$ and $b|b$ by definition. \SFTSOC, $b \not\in \Z^+$. This means that $b<0$. But since by definition of $\gcd$, $b|a, b|b$, it is also true that $-b|a$ and $-b|b$ Therefore, $-b$ is also a common divisor of $a$ and $b$. But $-b>0>b$, so $b$ is not the maximal element of the set $S = \{d\in\Z:d|a, d|b\}$. Hence, $\gcd(a,b)\neq b$. This is a contradiction. Therefore, if $\gcd(a,b)=b$, then $b \in \Z^+$ and $b|a$. \\
+
+Conversely, if $b \in \Z^+$ and $b|a$, then $b|b$ and $b|a$. Therefore, $b$ is in the set $S = \{d\in\Z:d|a, d|b\}$. By Lemma \ref{1.12}, for all $d \in \Z, b\in\Z^+$ if $d|b$, then $d \leq b$. So if $d \in \Z$ and $d \in S$, then $d|b$, so $d \leq b$. This shows that $b$ is the maximal element of the set $S$. Thus, $\gcd(a,b) = b$.
+\end{proof}
+
+\begin{prop}
+\label{2.12}
+For all $a, b, q, r \in \Z$, if $a = bq + r$, then $\gcd(a,b) = \gcd(b,r)$.
+\end{prop}
+
+\begin{proof}
+We use the notation $\gcd(a,b,r)$ to denote the greatest common divisor of $a, b, r$, that is, $\gcd(a,b,c)$ is the maximal element of the set $S = \{d\in\Z:d|a, d|b, d|r\}$. \\
+
+Suppose $d = \gcd(a,b)$. By definition, there exists $a', b' \in \Z$ \st $a=d a'$, $b= d b'$. Then 
+$$r = a-bq = d a' - (d b')q = d(n-mq)$$
+Therefore, $d|r$. Since $d|a, d|b, d|r$, $d$ is an element of the set $S = \{d\in\Z:d|a, d|b, d|r\}$. \SFTSOC, $d$ is not the maximal element of the set $S$, i.e., there is an element $d_1 \in S$ such that $d_1 > d$. Then $d_1|a, d_1|b$ by definition. However, we know that $d$ is the largest element in $\Z$ such that. $d|a, d|b$. This gives a contradiction. Therefore, $d$ is the maximal element of the set $S$. \\
+
+Similarly, suppose $d' = \gcd(b,r)$. By definition, there exists $b', r' \in \Z$ \st $b= d' b'$ and $r = d' r'$. Then 
+$$a = b q + r = d' b' q + d' r' = d' (b' q + r')$$
+Therefore, $d'|a$. Since $d'|a, d'|b, d'|r$, $d'$ is an element of the set $S$. \SFTSOC, $d'$ is not the maximal element of the set $S$, i.e., there is an element $d' \in S$ such that $d_1 > d'$. Then $d_1|b, d_1|r$ by definition. However, we know that $d'$ is the largest element in $\Z$ such that. $d'|b, d'|r$. This gives a contradiction. Therefore, $d'$ is the maximal element of the set $S$. \\
+
+We previously showed that $\gcd(a,b)$ is unique. Therefore, $d=d'$, i.e., $\gcd(a,b) = \gcd(b,r)$.
+\end{proof}
+
+Let $a,b \in \Z$ and $b \neq 0$. By Division Theorem (Theorem \ref{division}), we can find $q_1, r_1 \in \Z$ \st $a = b q_1 + r_1$ and $0 \leq r_1 < |b|$. Similarly, we can find $q_2, r_2 \in \Z$ \st $a = b q_2 + r_2$ and $0 \leq r_2 < r_1$. 
+\begin{align*}
+a&=b q_1+r_1           &  0 \leq r_1 &< |b| \\
+b&=r_1q_2+r_2          &  0 \leq r_2 &< r_1 \\
+r_1&=r_2q_3+r_3        &  0 \leq r_3 &< r_2 \\
+&\vdotswithin{=} & \vdotswithin{<} 
+\end{align*}
+\begin{defn}
+\label{eu-alg}
+This process is known as the Euclid's Algorithm.
+\end{defn}
+
+\begin{prop}
+\label{3.12}
+The Euclid's Algorithm on $a, b$ terminates for all $a, b$ with $b\neq 0$, i.e., there is an $n \in \Z^+$ \st $r_{n-2} = r_{n-1}q_n+r_n$ and $r_n=0$.
+\end{prop}
+
+\begin{proof}
+\SFTSOC, there does not exist $r_n$ \st $r_n=0$. We know that in the formulation of Euclid's algorithm, for all $k \in \Z^+$, if $r_k \neq 0$, $r_{k+2} = r_k q_k + r_{k+1}$, where $0 \leq r_{k+1} < r_{k}$. Let $S = \{r_k: k\in \Z+\}$. Since for all $k$, $r_k \geq 0$, $S \subseteq \{0\}\cup \Z^+$. By Generalized WOP, $S$ has a minimal element. However, since $r_k \neq 0$, for all $k\in\Z^+$, there is an element $k+1$ such that $r_{k+1} < r_k$. This contradicts that $S$ has a minimal element. Therefore, there is an $n \in \Z^+$ \st $r_{n-2} = r_{n-1}q_n+r_n$ and $r_n=0$.
+\end{proof}
+
+Therefore, we can formulate the Euclid's Algorithm on $a, b$ as:
+
+\begin{align*}
+a&=b q_1+r_1           &  0 \leq r_1 &< |b| \\
+b&=r_1q_2+r_2          &  0 \leq r_2 &< r_1 \\
+r_1&=r_2q_3+r_3        &  0 \leq r_3 &< r_2 \\
+&\vdotswithin{=} & \vdotswithin{<} \\
+r_{n-3}&=r_{n-2}q_{n-1}+r_{n-1}        &  0 \leq r_{n-1} &< r_{n-2}\\
+r_{n-2}&=r_{n-1}q_n+r_n       &  r_n=0
+\end{align*}
+
+\begin{lem}
+\label{3.13.2}
+If $a \in \{0\} \cup \Z$, then $\gcd(a, 0)=a$.
+\end{lem}
+
+\begin{proof}
+We know that $a|a, a|0$. So $a$ is a common divisor of $a, 0$. If $b|a$, then $b \leq a$. Therefore, $a$ is the greatest common factor of $a, 0$.
+\end{proof}
+
+\begin{prop}
+\label{3.13}
+The last non-zero remainder of the Euclid's Algorithm on $a$ and $b$ is $\gcd(a,b)$.
+\end{prop}
+
+\begin{proof}
+We use strong induction. From Lemma \ref{2.12}, we know that $\gcd(a,b)=\gcd(b,r_1)=\gcd(r_1,r_2)$. This is our base case for induction. Suppose $r_n = 0$ in our Euclid's Algorithm. Let $2 \leq k \leq n-1$. Assume by induction that $\gcd(a,b) = \gcd(r_{k-1}, r_k)$. Since $r_{k-1}=r_kq_{k+1} + r_{k+1}$, $\gcd(r_{k-1}, r_k) = \gcd(r_k, r_{k+1})$. Since $\gcd(r_{k-1}, r_k)=\gcd(a,b)$, $\gcd(r_k, r_{k+1})$ This completes the induction and shows that for all  $2 \leq k \leq n$, $\gcd(a,b) = \gcd(r_{k-1}, r_k)$. Therefore, $\gcd(a,b)=\gcd(r_{n-1},r_n)=\gcd(r_{n-1},0)=r_{n-1}$. $r_{n-1}$ is defined as the last non-zero remainder of the Euclid's Algorithm, the last non-zero remainder of the Euclid's Algorithm on $a$ and $b$ is $\gcd(a,b)$.
+\end{proof}
+
+\begin{prop}[Bézout's Lemma]
+Let $a, b\in \Z$, and $d = \gcd(a,b)$. Then there exists $x, y \in \Z$ \st $ax+by=d$.
+\end{prop}
+
+\begin{proof}
+\label{bezout}By the above proposition, $d=r_{n-1}$. We will use induction to show that there exists $x, y \in \Z$ \st $ax+by=r_{n-1}$. From $a = bq_1+r_1$, we get $r_1=a-bq_1$, so there exists $x,y \in \Z$ \st $ax+by=r_1$. Let $1 \leq k \leq n-2$. Suppose by strong induction that for all $1 \leq k' \leq k$, there exists $x_{k'}, y_{k'}$ \st $r_{k'} = ax_{k'}+by_{k'}$.  Then, it follows that $r_{k-1} = ax_{k-1} + by_{k-1}$ and $r_k=ax_k+by_k$. Hence, 
+\begin{equation} 
+\begin{split}
+r_{k+1} & = r_{k-1}-r_kq_k \\
+ & = (ax_{k-1} + by_{k-1})-(ax_k+by_k)\\
+ & = a(x_{k-1}-x_k) + b(y_{k-1}-y_k)
+\end{split}
+\end{equation}
+Therefore, let $x_{k+1}=x_{k-1}-x_k$, $y_{k+1}=y_{k-1}-y_k$, and it follows that $r_{k+1}=ax_{k+1}+by_{k+1}$. By induction, for all $1 \leq k \leq n-1$, there exists $x_k, y_k$ \st $r_k = ax_k+by_k$. Therefore, let $x=x_{n-1}, y=y_{n-1}$, then $r_{n-1}=\gcd(a,b)=ax+by$.
+\end{proof}
+
+\begin{prop}
+\label{bezout reverse}If $ax+by=n$ for some $a,b,x,y,n\in \Z,$ then $gcd(a,b)|n.$ 
+\end{prop}
+\begin{proof}
+Note that by Definition \ref{gcd}, we have gcd($a,b)|a$ and gcd($a,b)|b,$ so by Lemma \ref{2.10} we have gcd($a,b)|ax+by.$ Substituting $ax+by=n$ completes the proof.
+\end{proof}
+
+
+
+
+
+\section{Primes in $\Z$}
+This section concerns the definition and basic properties of prime numbers, our subject matter of Unique Factorization Theorem. 
+\begin{defn}
+\label{unit}
+Let $R$ be an ordered ring. Call $u\in R$ a unit if $\exists v\in R$ such that $uv = 1.$
+\end{defn}
+
+\begin{prop}
+The only units on $\Z$ are 1 and -1. 
+\end{prop}
+\begin{proof}
+Let $ab=1$, where $a,b\in \Z$. If either $a=0$ or $b=0$, we have $ab=0\neq 1$. Thus $a,b\neq 0$. We can divide into 4 cases:
+\begin{enumerate}
+    \item If $a,b\in \Z^+$, then $a,b\geq 1$ by NIBZO. Since either $a>1$ or $b>1$ implies $ab>1$, we must have $a=b=1$. Thus, $1$ is a unit by definition. 
+    \item If $a,-b\in \Z^+$, then $-(ab)=a(-b)\in \Z^{+}$ by closure. However, this violates $ab=1\in \Z^{+}$ by trichotomy. 
+    \item If $-a,b\in \Z^+$, then $-(ab)=(-a)b\in \Z^{+}$ by closure. However, this violates $ab=1\in \Z^{+}$ by trichotomy.  
+    \item If $-a,-b\in \Z^+$, then $-a,-b\geq 1$ by NIBZO. Since either $a>1$ or $b>1$ implies $ab=(-a)(-b)>1$, we must have $-a=-b=1$. Thus, $a=b=-1$, and $-1$ is a unit by definition.
+\end{enumerate}
+\end{proof}
+
+\begin{defn}
+\label{prime}
+Let $R$ be an ordered ring. Call $p\in R$ a prime if $p=ab$ for some $a,b\in \Z$ implies exactly one of $a$ or $b$ is a unit of $R.$  
+\end{defn}
+
+\begin{lem}
+\label{gcdp} If $p$ is prime in $\Z^{+},$ for all positive integers $a$ \st $p$ does not divide $a$, $\gcd(a,p)=1$.
+\end{lem}
+
+\begin{proof}
+Suppose by contrapositive, $\gcd(a, p) \neq 1$. Then there exists $d > 1$ \st $d|a, d|p$. Let $k \in \Z$ \st $p = d k$. By Proposition \ref{unit}, $\pm 1$ are the only units in $\Z$. Since $d>1$, $d \neq \pm 1$, so d is not a unit in $\Z$. Then $k$ must be a unit by definition of prime, i.e., $k = \pm 1$. If $k = 1$, then $p =d$. Since $d | a$, $p | a$. If $k = -1$, then $p = -d$. Since $d|a$, we have $p|a$. Otherwise, $k=1,$ which means $p=d$ and therefore $d|a \Rightarrow p|a.$ In either case, the contrapositive holds, meaning the original statement $p|a\Rightarrow\gcd(a, p)=1$ holds.
+\end{proof}
+
+\begin{cor}
+\label{gcdp-cor}
+If $p, q$ are positive primes, and $p|q$, then $p=q$. 
+\end{cor}
+
+\begin{proof}
+By $p|q$, $\exists a\in\Z$ \st $pa=q$. By \ref{converse-closure}, $a\in \Z$, thus $a\geq 1$. By the definition of $q$ as a prime, exactly one of $a$ and $p$ is a unit. Since $p$ is a positive prime, $p$ is not a unit. Thus $a$ is a unit, and the only positive unit is 1. thus $q=1\cdot p=p$.
+\end{proof}
+
+\begin{cor}
+\label{gcdp2} Let $p$ be a prime in $\Z^{+}.$ If $a\in\Z^{+}$ such that $a$ does not divide $p,$ then gcd($a,p)=1.$
+\end{cor}
+\begin{proof}
+The $a\leq p$ case has already been explored in Lemma \ref{gcdp}, so assume $a>p$. By Proposition \ref{2.12}, we have gcd($a,p)=$gcd($r,p)$ for some $r\in \Z^{+}, 0\leq r< p.$ Then applying Lemma \ref{gcdp} completes the proof.
+\end{proof}
+
+\begin{lem}
+\label{5.9}If $a\in \Z_{m},$ then a represents a unit in $\Z_{m}$ if and only if $gcd(a,m)=1.$
+\end{lem}
+\begin{proof}
+\noindent If gcd$(a,m)=1$, note that by Bezout's Lemma, $\exists x,y\in \Z$ \st $ax+my=1.$ By Lemma \ref{3.10}, we have $ax=1$ as desired.\\
+
+\noindent If gcd$(a,m)\neq 1$, since gcd$(a,m)\in \Z^{+}$ by \ref{gcdpos}, gcd$(a,m)>1$. \FTSOC, suppose $a$ is a unit. Thus, $\exists a' \in \Z_{m}$ as $aa'=1$. Thus $\exists q\in \Z$ \st $aa'+qm=1$ in $\Z$. By \ref{2.10}, $g|1$, and by \ref{1.12}, $g\leq 1$. Since $g>1$, there is a contradiction. Hence our supposition is false, and $a$ is not a unit in $\Z_{m}$
+\end{proof}
+
+\begin{prop}
+\label{5.7}For all $a,b,p\in \Z,$ if $p$ is a prime, then $p|ab$ implies $p|a$ or $p|b.$
+\end{prop}
+\begin{proof}
+If $p|a$ we are done, so assume $p\not|a.$ Then note by Corollary \ref{gcdp2} we have gcd($a,p)=1,$ so by Bezout's Lemma, $\exists k_{1},k_{2}\in \Z$ such that $k_{1}p+k_{2}a=1.$ By Lemma \ref{0.6.1}, we have $b(k_{1}p+k_{2}a)=b. \Rightarrow k_{1}pb+k_{2}ab = b.$ Since $p|ab, \exists q\in \Z$ \st $ab=qp,$ so $k_{1}pb+k_{2}qp = b. \Rightarrow (k_{1}b + k_{2}q)p=b.$ By multiplicative closure, $k_{1}b, k_{2}q\in \Z,$ so by additive closure, $k_{1}b + k_{2}q\in \Z,$ implying $p|b$ as desired. 
+\end{proof}
+
+
+\begin{lem}
+\label{FTA-lem}
+If $p$ is a prime, and $a_1, a_2, \ldots a_n \in \Z$, and $p$ divides $\prod_{i=1}^n a_i$, then there exists an $1 \leq i \leq n$ \st $p|a_i$.
+\end{lem}
+
+\begin{cor}
+\label{5.8}
+If $x^{2}=1$ in $\Z_{p}$, where $p$ is a prime, then $x=\pm 1$ in $\Z_{p}$
+\end{cor}
+\begin{proof}
+Since $x^{2}=1$ in $\Z_{p}$, we have $p|x^{2}-1$. Thus, $p|(x+1)(x-1)$. By \ref{5.7}, we have either $p|x+1$ or $p|x-1$, thus out claim follows.
+\end{proof}
+
+\begin{lem}[The Fundamental Lemma]
+\label{5.5}
+If $a|bc$ and gcd($a,b$)=1, then $a|c$.
+\end{lem}
+\begin{proof}
+By Bezout's Lemma, (\ref{bezout}), $\exists m,n \in \Z$ \st $am+bn=$gcd$(a,b)=1$. Thus, $amc+bnc=c$. Since $a|amc$, $a|(bc)m$, by lemma \ref{2.10} we have $a|c$. 
+\end{proof}
+
+\begin{proof}
+We do induction on $n$. Consider the base case $n=1$. If $n=1$, then $p|a_1 \implies p|a_1$. Suppose by induction that $p|\prod_{i=1}^k a_i \implies \exists 1\leq i \leq n$ \st $p|a_i$. Let $p|\prod_{i=1}^{k+1} a'_i$. If $p|a'_{n+1}$, then we find such $i$ such that $p|a_i$. Otherwise, Proposition \ref{5.7} shows that $p|\prod_{i=1}^k a'_i$. By our induction assumption, there exists $1 \leq i \leq n$ \st $p|a'_i$. This completes the induction. Thus, for all $n$ there exists an $1 \leq i \leq n$ \st $p|a_i$.
+\end{proof}
+
+\begin{lem}
+\label{zp} If $p\in \Z$ is prime, all nonzero elements in $\Z_{p}$ are units of $\Z_{p}.$
+\end{lem}
+\begin{proof}
+By Lemma \ref{5.9}, gcd($a,p)=1\Rightarrow a$ is a unit of $\Z_{p}.$ But by Lemma \ref{gcdp}, we have gcd($a,p)=1$ for all nonzero elements $a$ of $\Z_{p},$ thus concluding the proof.
+\end{proof}
+
+\begin{lem}
+\label{3.7}If $p$ is prime, for all nonzero $a,b,c\in \Z_{p}, ac=bc$ implies $a=b.$
+\end{lem}
+\begin{proof}
+By Lemma \ref{zp}, $c$ is a unit in $\Z_{p}.$ Therefore, $\exists c^{-1}\in \Z_{p}$ \st $cc^{-1} = 1.$ Since $\Z_{p}$ is an ordered ring, by Lemma \ref{0.6.1} we have $acc^{-1} = bcc^{-1}.$ By distibutivity, $a(cc^{-1}) = b(cc^{-1}),$ so $a=b.$
+\end{proof}
+
+\begin{lem}
+\label{3.8} Every positive integer $n\geq2$ has a prime divisor $p\in \Z^{+}.$
+\end{lem}
+\begin{proof}
+We can prove this with strong induction (Corollary \ref{induction2}). \\
+
+Base case $(n=2):$ By Lemma \ref{div}, we have $2|2.$ Since $2$ is prime, our base case holds. \\
+
+Inductive step: Assume every positive integer $1\leq n\leq k$ has a prime divisor. Then note $k+1$ can either be prime or composite (not prime). If $k+1$ is prime, by Lemma \ref{div}, $(k+1)|(k+1)$ and we are done. Else, $k+1 = ab$ for some positive integers $1\leq a,b \leq k.$ This implies $\exists p\in \Z^{+}$ such that $p|a.$ Since $a|(k+1),$ by Lemma \ref{1.9}, $p|(k+1).$
+\end{proof}
+
+\begin{lem}
+\label{3.9}Every positive integer $n\geq2$ is expressible as a product of one or more positive primes.
+\end{lem}
+\begin{proof}
+We can also prove this with general strong induction (Corollary \ref{induction2}). \\
+
+Base case $(n=2): 2=2,$ so since 2 is prime, our base case holds. \\
+
+Inductive step: Assume for all positive integers $1\leq n \leq k,$ n can be expressed as a product of one or more prime divisors. If $k+1$ is prime, then $k+1=k+1$ and we are done. If $k+1$ is composite, then $k+1=ab$ for some positive integers $1\leq a,b \leq k.$ By the induction hypothesis, $a$ and $b$ are both the product of one or more positive primes, so $k+1$ is also the product of one or more positive primes.
+\end{proof}
+
+
+
+
+
+
+
+
+\section{Products}
+A rigorous definition of product is needed to complete the proof of Unique Factorization Theorem. One may write $p= a_1 \cdot a_2 \cdots a_n$. However, this notion of repeated multiplication is not formalized. We will devote a separate section developing the properties of products to lay ourselves a solid foundation.
+
+
+\begin{defn}
+\label{prod}For a sequence $a_{n},$ define the product by the following recursion:
+
+\begin{equation}
+    \prod_{j=l}^{n} a_{j} =
+    \begin{cases}
+    1 & n<l\\
+    a_{n}(\prod_{j=1}^{n-1} a_{j}) & n \geq l
+    \end{cases}
+\end{equation}
+\end{defn}
+
+\begin{lem}
+\label{prod1}
+$$(\prod_{j=l}^i a_i)(\prod_{j=i+1}^k a_i)=\prod_{j=l}^k a_i$$ if $j \geq i, k \geq j$.
+\end{lem}
+\begin{proof}
+We use induction. Consider the base case $k=i$, then $$\prod_{j=i+1}^k a_i=l$$ And $$(\prod_{j=l}^i a_i)(\prod_{j=i+1}^k a_i)=\prod_{j=l}^i a_i=\prod_{j=l}^k a_i$$ Assume by induction that $$(\prod_{j=l}^i a_i)(\prod_{j=i+1}^k a_i)=\prod_{j=1}^k a_i$$
+Then
+
+\begin{equation*} 
+\begin{split}
+(\prod_{j=l}^i a_i)(\prod_{j=i+1}^{k+1} a_i)&=(\prod_{j=l}^i a_i)(a_{k+1})(\prod_{j=i+1}^{k} a_i)\\ &=(a_{k+1})(\prod_{j=l}^i a_i)(\prod_{j=i+1}^{k} a_i)\\
+&=(a_{k+1})(\prod_{j=l}^k a_i)=\prod_{j=l}^{k+1} a_i
+\end{split}
+\end{equation*}
+This completes the induction.
+\end{proof}
+
+\begin{lem}
+\label{prod2}
+Let $k, l \in \Z^+$. If there exists $l \leq i \leq k$ \st $a_i = 0$, then $\prod_{j=1}^k a_j = 0$.
+\end{lem}
+\begin{proof}
+\begin{equation*} 
+\begin{split}
+\prod_{j=l}^k a_j &=(\prod_{j=l}^i a_j)(\prod_{j=i+1}^{k} a_j)\\ &=(a_{i})(\prod_{j=l}^{i-1} a_j)(\prod_{j=i+1}^{k} a_j)\\
+&=0 \cdot (\prod_{j=l}^{i-1} a_j)=\prod_{j=i+1}^{k} a_j = 0
+\end{split}
+\end{equation*}
+\end{proof}
+
+\begin{prop}
+\label{prod3}
+Let $\{\sigma(j):1 \leq i \leq n\}$ be a reordering of the set $\{j: 1 \leq j \leq n$. Then $\prod_{j=1}^n a_j = \prod_{j=1}^n a_{\sigma(j)}$.
+\end{prop}
+
+\begin{proof}
+We use induction. For base case $n=1$, $\sigma(1)=1$, so $$\prod_{j=1}^1 a_j = \prod_{j=1}^1 a_{\sigma(j)} = a_1$$
+Assume by induction that $\prod_{j=1}^k a_j = \prod_{j=1}^k a_{\sigma(j)}$ if $\{a_{\sigma(j)}: 1 \leq j \leq k\}$ is a reordering of $\{a_j: 1 \leq j \leq k\}$. Consider $\prod_{j=1}^{k+1} a_j = \prod_{j=1}^{k+1} a_{\sigma'(j)}$, where $\sigma'$ is any reordering of $\{j:1\leq j \leq n+1$. Since $\sigma'$ is only a reordering of $\{j:1\leq j \leq n+1$, there exists $i$, where $1 \leq i \leq n+1$, \st $i = \sigma'(k+1)$. Therefore, since 
+$$\prod_{j=1}^{k+1} a_j = (\prod_{j=1}^{i} a_j)(\prod_{j=i+1}^{k+1} a_j)= (\prod_{j=1}^{i-1} a_j)(a_i)(\prod_{j=i+1}^{k+1} a_j)$$
+We define sequence $b_j$ \st $b_j=a_j$ for $j<i$ and $b_j=a_{j+1}$ for $i \leq j < k$. Then
+\begin{equation*} 
+\begin{split}
+\prod_{j=1}^{k+1} a_j &=(\prod_{j=1}^{i-1} b_j)(a_i)(\prod_{j=i+1}^{k} b_j)\\ &=a_i(\prod_{j=1}^{i-1} b_j)(\prod_{j=i}^{k} b_j)\\
+&=(\prod_{j=1}^{k} b_j)(a_i)
+\end{split}
+\end{equation*}
+We also know that 
+$$\prod_{j=1}^{k+1} a_{\sigma'(j)} = a_{\sigma'(k+1)}(\prod_{j=1}^{k} a_{\sigma'(j)}) =  a_i(\prod_{j=1}^{k} a_{\sigma'(j)})$$
+Then, 
+$$a_i \prod_{j=1}^k b_j = a_i \prod_{j=1}^k a_{\sigma'(j)} \iff a_i=0 \mbox{ or } \prod_{j=1}^k b_j = \prod_{j=1}^k a_{\sigma'(j)}$$
+
+In the case of $a_i=0$, by the previous lemma, $\prod_{j=1}^n a_j = \prod_{j=1}^n a_{\sigma(j)}=0$. Otherwise, the induction assumption shows that $$\prod_{j=1}^k b_j = \prod_{j=1}^k a_{\sigma'(j)} $$ is true, because $\{a_{\sigma'(j)}: 1 \leq j \leq k\}$ is a reordering of $\{b_{j}: 1 \leq j \leq k\}$. So $$a_i \prod_{j=1}^k b_j = a_i \prod_{j=1}^k a_{\sigma'(j)}$$ Then $$\prod_{j=1}^{k+1} a_j = \prod_{j=1}^{k+1} a_{\sigma'(j)}$$ This completes the induction. Therefore, for all $n \in \Z^+$, $\prod_{j=1}^n a_j = \prod_{j=1}^n a_{\sigma(j)}$ if $\{a_{\sigma(j)}: 1 \leq j \leq n\}$ is a reordering of $\{a_j: 1 \leq j \leq n\}$. Therefore, since $\{a_{\sigma(j)}: 1 \leq j \leq n\}$ is a reordering of $\{a_j: 1 \leq j \leq n\}$, $\prod_{j=1}^n a_j = \prod_{j=1}^n a_{\sigma(j)}$.
+\end{proof}
+
+\begin{lem}
+\label{product order}For $l_{1}, l_{2}, r_{1}, r_{2}\in \Z,$ the following identity holds:
+\[\prod_{i=l_{1}}^{r_{1}}( \prod_{j=l_{2}}^{r_{2}} a_{i,j}) = \prod_{j=l_{2}}^{r_{2}} (\prod_{i=l_{1}}^{r_{1}} a_{i,j})\]
+
+\end{lem}
+
+\begin{proof}
+The proof follows a similar process as the proof of lemma \ref{sum order}.
+\end{proof}
+
+
+
+
+\section{Fundamental Theorem of Arithmetic}
+This section proves the subject matter of this paper, Unique Factorization Theorem. The basic idea of the proof is a proof by contradiction, namely, assume there exists a number that can be factored in two different ways. 
+\begin{thm}[Unique Factorization Theorem]
+\label{FTA}
+If $k\in \Z$, and $k \neq 0, \pm 1$, then $k$ is uniquely expressible as a product of one or more positive primes and a unit. 
+\end{thm}
+
+\begin{proof}
+We first consider the case $k \geq 2$. By Lemma \ref{3.9}, every positive integer is expressible as a product of $1$ or more positive primes. \SFTSOC, there are two ways to express k as a product of $1$ or more primes, i.e., suppose the set $S = \{m : m\leq n, \exists p_1, p_2, \ldots, p_n, q_1, q_2, \ldots q_m$ such that $\{p_i: 1 \leq i \leq n\} \neq \{q_i: 1 \leq i \leq m\}$ and $\prod_{i=1}^n p_i = \prod_{i=1}^m q_i\}$ is nonempty. The assumption that $m \leq n$ is made \WLOG, and the same argument below could hold if $n \leq m$. \\
+
+ Let $m'$ to be the minimal element of $S$ with $\prod_{i=1}^n p_i = \prod_{i=1}^{m'} q_i$. Either $m'=1$ or $m'>1$. If $m'=1$, then $\prod_{i=1}^n p_i = q_1$.  If $n=1$, then $p_1=q_1$. This contradicts the assumption that $\{p_i: 1 \leq i \leq n\} \neq \{q_i: 1 \leq i \leq m\}$. Therefore, $>1$ By Lemma \ref{FTA-lem}, since $q_1|\prod_{i=1}^n p_i$, there exists $1 \leq i \leq n$ \st $q_1|p_i$, then by Corollary \ref{gcdp-cor}, $q_1=p_i$. Then, $q_1 = p_i \cdot \prod_{j=1}^{i-1} p_j \prod_{j=i+1}^{m'} p_j$. By Lemma \ref{0.6.1}, $1 = \prod_{j=1}^{i-1} p_j \prod_{j=i+1}^{m'} p_j$. Since $n > 1$, and $p_j$ is not a unit for every $j$, $\prod_{j=1}^{i-1} p_j \prod_{j=i+1}^{m'} p_j$ cannot be equal to $1$. This gives a contradiction. \\
+ 
+Consider the second case, where $m'>1$. Because $\prod_{i=1}^n p_i = \prod_{i=1}^{m'} q_i = q_{m'} \prod_{i=1}^{m'-1} q_i$, $q_{m'}$ divides $\prod_{i=1}^n p_i$. By Lemma \ref{FTA-lem}, since $q_{m'}|\prod_{i=1}^n p_i$, there exists $1 \leq i \leq n$ \st $q_{m'}|p_i$, then by Corollary \ref{gcdp-cor}, $q_{m'}=p_i$. Lemma \ref{0.6.1} shows that $\prod_{j=1}^{i-1} p_j \prod_{j=i+1}^{n} p_j = \prod_{j=1}^{m'-1} p_j$. This contradicts the minimality of $m'$, since $m'-1 \in S'$. Therefore, $S$ is the empty set.  \\
+
+Suppose $k \leq -2$. Then $-k \geq 2$ and is uniquely expressible as a product of positive primes $\prod_{i=1}^n p_i$. Then $-k = -\prod_{i=1}^n p_i$. Since $\prod_{i=1}^n p_i$ is a unique factorization, $-k = -\prod_{i=1}^n p_i$ is a unique factorization as well. Therefore, if $k \neq 0, \pm 1$, then $k$ is uniquely expressible as a product of one or more positive primes and a unit.
+\end{proof}
+
+
+\section{Conclusion}
+The proof for Unique Factorization Theorem in the ring of integers is complete. One might wonder why we need such rigor in our proof. There are three reasons. First, a rigorous proof gives a theorem a solid foundation and shows that ring axioms, order axioms, and well-ordering principle alone imply Unique Factorization Theorem. This is a significant result. Second, the method developed along the way of proving Unique Factorization Theorem, such as Division with Remainder, Euclid's Algorithm, Bézout Lemma, and Fundamental Lemma, have many significant applications themselves. Third, the step-by-step proof makes it generalizable to rings other than the ring of integers. For example, Unique Factorization Theorem also holds in the ring of Gaussian integers and the ring $F[x]$, where $F$ is a field, and $F[x]$ is the ring of polynomials with coefficients in $F$. The method of proving the theorem in the ring of integers could be easily modified to derive similar results in the ring of Gaussian integers and $F[x]$. 
+
+
+
+\end{document}
